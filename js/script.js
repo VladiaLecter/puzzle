@@ -1,18 +1,22 @@
 //obtener elementos principales del HTML
 var containerCell = document.getElementById("container-cell");
 var containerPiece = document.getElementById("container-piece");
+var dialogElement = document.getElementById("dialog");
 var selectedPiece = null;
+
+document.onkeypress = keypress;
 
 //crear casillas en el contenedor de celdas
 createBoard();
 createPieces();
 
-function createCell(width, height) {
+function createCell(width, height, position) {
   var cellElement = document.createElement("div");
   cellElement.style.width = width;
   cellElement.style.height = height;
   cellElement.style.border = "1px solid black";
   cellElement.style.backgroundColor = "pink";
+  cellElement.dataset.position = position;
   cellElement.onclick = clickCell;
 
   return cellElement;
@@ -30,7 +34,9 @@ function createPiece(width, height, piece) {
   pieceElement.height = height;
   pieceElement.style.border = "1px solid black";
   pieceElement.src = piece.image;
+  pieceElement.dataset.position = piece.position;
   pieceElement.onclick = clickPiece;
+
   //mandar la pieza a la celda- agregar elementos al documento
   cellElement.appendChild(pieceElement);
 
@@ -44,7 +50,7 @@ function createBoard() {
   width /= 4;
   height /= 4;
   for (var i = 0; i < 16; i++) {
-    let cellElement = createCell(width, height);
+    let cellElement = createCell(width, height, i);
     addCell(cellElement);
   }
 }
@@ -89,5 +95,48 @@ function clickCell(e) {
     cell.appendChild(selectedPiece);
   } else {
     console.log("selecciona una pieza");
+  }
+}
+function keypress(ke) {
+  if (ke.keyCode == 101 || ke.keyCode == 69) {
+    let result = evaluateBoard();
+    showDialog(result);
+  }
+}
+function showDialog(result) {
+  var imgElement = dialogElement.children[0];
+  var textContent = dialogElement.children[1];
+  if (result) {
+    imgElement.src =
+      "https://eslamoda.com/wp-content/uploads/sites/2/2014/12/te-los-ganaste.jpg";
+    textContent.innerText = "Ganaste!";
+  } else {
+    imgElement.src =
+      "https://lh3.googleusercontent.com/proxy/DtGHKB5Nyn4tuDdNFSKMG-z2dUYFpCgCTiKQc8mAyF7NbxIkHzofrMf8rhgjgaX9nAbqjWeavkV_bJ_-qXaxCcgp7QXs0d23nmygaWKOmUFhsw";
+    textContent.innerText = "Perdiste ):";
+    returnPieces();
+  }
+  dialogElement.style.display = "block";
+}
+
+function evaluateBoard() {
+  var cells = containerCell.children;
+  for (cell of cells) {
+    let piece = cell.children[0];
+    if (piece.dataset.position != cell.dataset.position) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function returnPieces() {
+  let cells = containerCell.children;
+  let cellPieces = containerPiece.children;
+
+  for (cell of cells) {
+    let position = cell.dataset.position;
+    let piece = cell.children[0];
+    cellPieces[piece.dataset.position].appendChild(piece);
   }
 }

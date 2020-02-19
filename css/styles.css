@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
 }
+
 .container {
   width: 100%;
   height: 100vh;
@@ -26,4 +27,16 @@
   grid-template-columns: 25% 25% 25% 25%;
   grid-template-rows: 25% 25% 25% 25%;
   background-color: rgb(104, 31, 187);
+}
+
+#dialog {
+  position: absolute;
+  width: 30%;
+  height: 40%;
+  background-color: white;
+  display: none;
+}
+
+.dialog-show {
+  display: block;
 }
