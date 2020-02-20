@@ -33,6 +33,7 @@ function createPiece(width, height, piece) {
   //configurando la celda para la pieza dentro del contenedor de piezas
   cellElement.style.width = width;
   cellElement.style.height = height;
+  cellElement.dataset.fill = false;
 
   //configurando propiedades de la pieza dentro del contenedor piezas
   pieceElement.width = width;
@@ -44,6 +45,9 @@ function createPiece(width, height, piece) {
   pieceElement.draggable = true;
 
   //configurando eventos
+  cellElement.ondrop = dropCell;
+  cellElement.ondragover = allowDrop;
+
   pieceElement.onclick = clickPiece;
   pieceElement.ondragstart = dragPiece;
 
