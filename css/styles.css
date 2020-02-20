@@ -40,3 +40,15 @@
 .dialog-show {
   display: block;
 }
+.piece-zoomin {
+  animation: zoomin 1s 1;
+}
+
+@keyframes zoomin {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}

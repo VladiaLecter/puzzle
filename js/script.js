@@ -40,6 +40,7 @@ function createPiece(width, height, piece) {
   pieceElement.height = height;
   pieceElement.style.border = "1px solid black";
   pieceElement.src = piece.image;
+  pieceElement.classList.add("piece-zoomin");
   pieceElement.dataset.position = piece.position;
   pieceElement.id = "img" + piece.position;
   pieceElement.draggable = true;
@@ -89,10 +90,11 @@ function addPiece(element) {
 function generatePieceData() {
   //se genero una lista de piezas
   var pieces = [];
+  var indexShuffle = shuffle(16);
   for (let i = 0; i < 16; i++) {
     let piece = {
-      image: "img/" + (i + 1) + ".jpg",
-      position: i
+      image: "img/" + (indexShuffle[i] + 1) + ".jpg",
+      position: indexShuffle[i]
     };
     pieces.push(piece);
   }
@@ -147,11 +149,13 @@ function evaluateBoard() {
 function returnPieces() {
   let cells = containerCell.children;
   let cellPieces = containerPiece.children;
+  let indexList = shuffle(16);
 
   for (cell of cells) {
-    let position = cell.dataset.position;
     let piece = cell.children[0];
-    cellPieces[piece.dataset.position].appendChild(piece);
+    let position = piece.dataset.position;
+    let positionRandom = indexList[position];
+    cellPieces[positionRandom].appendChild(piece);
   }
 }
 function dragPiece(ev) {
@@ -183,3 +187,21 @@ function dropCell(ev) {
 function allowDrop(ev) {
   ev.preventDefault();
 }
+
+function shuffle(max) {
+  let listShuffle = [];
+  let i = 0;
+  let temp = 0;
+  while (i < max) {
+    temp = Math.round(Math.random() * (max - 1));
+    if (listShuffle.indexOf(temp) == -1) {
+      listShuffle.push(temp);
+      i++;
+    }
+  }
+  return listShuffle;
+}
+
+// function shuffleList(list) {
+//   let indexShuffleList = shuffle(list.length);
+//   for (let i = 0; i < list.length; i++)
