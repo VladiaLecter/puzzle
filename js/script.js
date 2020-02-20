@@ -17,7 +17,12 @@ function createCell(width, height, position) {
   cellElement.style.border = "1px solid black";
   cellElement.style.backgroundColor = "pink";
   cellElement.dataset.position = position;
-  cellElement.onclick = clickCell;
+  cellElement.dataset.fill = false;
+
+  //configurar eventos
+  cellElement.onclick = clickCell; //click en la celda
+  cellElement.ondrop = dropCell; // drop (soltar) en la celda
+  cellElement.ondragover = allowDrop;
 
   return cellElement;
 }
@@ -29,13 +34,18 @@ function createPiece(width, height, piece) {
   cellElement.style.width = width;
   cellElement.style.height = height;
 
-  //configurando la pieza dentro del contenedor piezas
+  //configurando propiedades de la pieza dentro del contenedor piezas
   pieceElement.width = width;
   pieceElement.height = height;
   pieceElement.style.border = "1px solid black";
   pieceElement.src = piece.image;
   pieceElement.dataset.position = piece.position;
+  pieceElement.id = "img" + piece.position;
+  pieceElement.draggable = true;
+
+  //configurando eventos
   pieceElement.onclick = clickPiece;
+  pieceElement.ondragstart = dragPiece;
 
   //mandar la pieza a la celda- agregar elementos al documento
   cellElement.appendChild(pieceElement);
@@ -139,4 +149,33 @@ function returnPieces() {
     let piece = cell.children[0];
     cellPieces[piece.dataset.position].appendChild(piece);
   }
+}
+function dragPiece(ev) {
+  console.log(ev);
+  let piece = ev.target;
+  ev.dataTransfer.setData("text", piece.id);
+}
+
+function dropCell(ev) {
+  //ignorar el evento de drop
+  ev.preventDefault();
+  //recuperando el id de la pieza que viene en el evento drag
+  let dataId = ev.dataTransfer.getData("text");
+  //recuperando el elemento donde voy a soltar otro elemento
+  let cell = ev.target;
+  //aqui recupero la pieza a traves de su id (propiedad)
+  let piece = document.getElementById(dataId);
+  //agregamos el elemento pieza a el elemento celda
+
+  if (cell.dataset.fill == "false") {
+    cell.dataset.fill = true;
+    cell.appendChild(piece);
+  } else if (cell.dataset.fill == "true") {
+    cell.dataset.fill = false;
+    cell.appendChild(piece);
+  }
+}
+
+function allowDrop(ev) {
+  ev.preventDefault();
 }
